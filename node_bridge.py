@@ -5,7 +5,7 @@ import sublime
 
 IS_OSX = platform.system() == 'Darwin'
 IS_WINDOWS = platform.system() == 'Windows'
-SETTINGS_FILE = 'JSCS-Formatter.sublime-settings'
+SETTINGS_FILE = 'JSCSFormatter.sublime-settings'
 
 def node_bridge(data, bin, cdir, args=[]):
 	settings = sublime.load_settings(SETTINGS_FILE)

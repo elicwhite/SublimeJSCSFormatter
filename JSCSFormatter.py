@@ -17,7 +17,7 @@ sublime.Region.__iter__ = lambda self: self.totuple().__iter__()
 # BIN_PATH = join(sublime.packages_path(), dirname(realpath(__file__)), 'jscs-passthrough.js')
 # BIN_PATH = join(sublime.packages_path(), dirname(realpath(__file__)), 'node_modules/.bin/jscs')
 BIN_PATH = 'jscs'
-SETTINGS_FILE = 'JSCS-Formatter.sublime-settings'
+SETTINGS_FILE = 'JSCSFormatter.sublime-settings'
 
 
 settings = sublime.load_settings(SETTINGS_FILE)
