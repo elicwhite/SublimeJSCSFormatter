@@ -45,7 +45,7 @@ To install via Package Control, do the following:
 
 By default, JSCSFormatter will supply the following settings:
 
-```
+```javascript
 {
   // The Nodejs installation path
   "node_path": {
@@ -60,14 +60,24 @@ By default, JSCSFormatter will supply the following settings:
     "linux": "/usr/bin/jscs",
     "osx": "/usr/local/bin/jscs"
   },
-  
+
   // Specify this path to a JSCS config file to override the default behavior.
   // Passed to JSCS as --config. Read more here:
   // http://jscs.info/overview.html#-config-
   "config_path": "",
-  
+
   // Automatically format when a file is saved.
-  "format_on_save": false
+  "format_on_save": false,
+
+  // Only attempt to format files with whitelisted extensions on save.
+  // Leave empty to disable the check
+  "format_on_save_extensions": [
+    "js",
+    "jsx",
+    "es",
+    "es6",
+    "babel"
+  ]
 }
 ```
 
