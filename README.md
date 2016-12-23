@@ -117,11 +117,11 @@ Modify the `node_path` and `jscs_path`.
 
 ```javascript
 {
-	"node_path": {
+    "node_path": {
     "linux": "/home/John/.nvm/versions/node/v6.9.2/bin/node",
   },
 
-	"jscs_path": {
+    "jscs_path": {
     "linux": "/home/John/.nvm/versions/node/v6.9.2/bin/jscs",
   },
 }
