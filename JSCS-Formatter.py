@@ -6,6 +6,7 @@ import sublime, sublime_plugin
 import platform
 import os, sys, subprocess, codecs, webbrowser
 from subprocess import Popen, PIPE
+from threading import Thread
 
 try:
   import commands
@@ -20,41 +21,29 @@ IS_WINDOWS = platform.system() == 'Windows'
 
 class FormatJavascriptCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    # Save the current viewport position to scroll to it after formatting.
-    previous_selection = list(self.view.sel()) # Copy.
-    previous_position = self.view.viewport_position()
+    def _run():
+      # Get the current text in the buffer and save it in a temporary file.
+      # This allows for scratch buffers and dirty files to be linted as well.
+      entire_buffer_region = sublime.Region(0, self.view.size())
 
-    # Save the already folded code to refold it after formatting.
-    # Backup of folded code is taken instead of regions because the start and end pos
-    # of folded regions will change once formatted.
-    folded_regions_content = [self.view.substr(r) for r in self.view.folded_regions()]
+      buffer_text = self.get_buffer_text(entire_buffer_region)
 
-    # Get the current text in the buffer and save it in a temporary file.
-    # This allows for scratch buffers and dirty files to be linted as well.
-    entire_buffer_region = sublime.Region(0, self.view.size())
-    text_selection_region = self.view.sel()[0]
+      output = self.run_script_on_text(buffer_text)
 
-    buffer_text = self.get_buffer_text(entire_buffer_region)
+      # If the prettified text length is nil, the current syntax isn't supported.
+      if output == None or len(output) < 1:
+        return
 
-    output = self.run_script_on_text(buffer_text)
+      # Replace the text only if it's different.
+      if output == buffer_text:
+        return
 
-    # If the prettified text length is nil, the current syntax isn't supported.
-    if output == None or len(output) < 1:
-      return
+      # Call ChangeTextCommand to change texts
+      self.view.run_command('change_text', {'output': output})
 
-    # Replace the text only if it's different.
-    if output != buffer_text:
-      self.view.replace(edit, entire_buffer_region, output)
-
-    self.refold_folded_regions(folded_regions_content, output)
-    self.view.set_viewport_position((0, 0), False)
-    self.view.set_viewport_position(previous_position, False)
-    self.view.sel().clear()
-
-    # Restore the previous selection if formatting wasn't performed only for it.
-    # if not is_formatting_selection_only:
-    for region in previous_selection:
-      self.view.sel().add(region)
+    # Run _run in thread, so it won't cause editor any freeze
+    thread = Thread(target=_run)
+    thread.start()
 
   def get_buffer_text(self, region):
     buffer_text = self.view.substr(region)
@@ -90,6 +79,33 @@ class FormatJavascriptCommand(sublime_plugin.TextCommand):
       msg = str(sys.exc_info()[1])
       print("Unexpected error({0}): {1}".format(sys.exc_info()[0], msg))
       sublime.error_message(msg)
+
+
+class ChangeTextCommand(sublime_plugin.TextCommand):
+  def run(self, edit, output):
+    # Save the current viewport position to scroll to it after formatting.
+    previous_selection = list(self.view.sel()) # Copy.
+    previous_position = self.view.viewport_position()
+
+    # Save the already folded code to refold it after formatting.
+    # Backup of folded code is taken instead of regions because the start and end pos
+    # of folded regions will change once formatted.
+    folded_regions_content = [self.view.substr(r) for r in self.view.folded_regions()]
+
+    # Get the current text in the buffer and save it in a temporary file.
+    # This allows for scratch buffers and dirty files to be linted as well.
+    entire_buffer_region = sublime.Region(0, self.view.size())
+
+    self.view.replace(edit, entire_buffer_region, output)
+
+    self.refold_folded_regions(folded_regions_content, output)
+    self.view.set_viewport_position((0, 0), False)
+    self.view.set_viewport_position(previous_position, False)
+    self.view.sel().clear()
+    # Restore the previous selection if formatting wasn't performed only for it.
+    # if not is_formatting_selection_only:
+    for region in previous_selection:
+      self.view.sel().add(region)
 
   def refold_folded_regions(self, folded_regions_content, entire_file_contents):
     self.view.unfold(sublime.Region(0, len(entire_file_contents)))
