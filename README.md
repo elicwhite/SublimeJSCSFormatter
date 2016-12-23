@@ -106,27 +106,26 @@ For example:
 
 **Setting up paths in Sublime with NVM**
 
-1. Find path of nodejs and jscs
+1. Find path of Node and JSCS
    ```
    npm config get prefix
    ```
 
-2. Return to sublime
-Open the `Preferences > Package Settings > JSCS-Formatter > Settings-User`  file.
-Modify the `node_path` and `jscs_path`.
+2. Return to Sublime
+Modify the file at `Preferences > Package Settings > JSCS-Formatter > Settings-User`.
+Update the `node_path` and `jscs_path` settings.
 
 ```javascript
 {
-    "node_path": {
-    "linux": "/home/John/.nvm/versions/node/v6.9.2/bin/node",
+  "node_path": {
+    "linux": "/home/YOURUSER/.nvm/versions/node/v6.9.2/bin/node",
   },
 
-    "jscs_path": {
-    "linux": "/home/John/.nvm/versions/node/v6.9.2/bin/jscs",
+  "jscs_path": {
+    "linux": "/home/YOURUSER/.nvm/versions/node/v6.9.2/bin/jscs",
   },
 }
 ```
-And jscs should work.
 
 ## Contributing
 
