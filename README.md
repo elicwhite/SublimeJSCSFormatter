@@ -119,10 +119,12 @@ Update the `node_path` and `jscs_path` settings.
 {
   "node_path": {
     "linux": "/home/YOURUSER/.nvm/versions/node/v6.9.2/bin/node",
+    "osx": "/usr/local/Cellar/nvm/0.32.0/versions/node/v6.9.2/bin/node",
   },
 
   "jscs_path": {
     "linux": "/home/YOURUSER/.nvm/versions/node/v6.9.2/bin/jscs",
+    "osx": "/usr/local/Cellar/nvm/0.32.0/versions/node/v6.9.2/bin/jscs",
   },
 }
 ```
